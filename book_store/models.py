@@ -1,36 +1,16 @@
-from datetime import datetime
+from sqlalchemy import String, Integer, Column, DateTime
 
-from pydantic import BaseModel, validator
+from .database import Base
 
 
-class Book(BaseModel):
-    title: str
-    author: str
-    pub_date: datetime
-    isbn: str
-    pages: int
-    hyperlink: str
-    language: str
+class Book(Base):
+    __tablename__ = "books"
 
-    @validator("title", "author", "language", pre=True)
-    def title_alphanumeric(cls, value):
-        assert value.isalnum(), "must be alphanumeric"
-        return value
-
-    @validator("pub_date", pre=True)
-    def parse_pub_date(cls, value):
-        return datetime.strptime(value, "%d.%m.%Y").date()
-
-    @validator("isbn", pre=True)
-    def parse_isbn(cls, value):
-        if len(value) != 17:
-            raise ValueError("isbn number should contain 17 characters")
-        return value
-
-    @validator("pages")
-    def check_pages(cls, value):
-        if not isinstance(value, int):
-            raise ValueError("pages should be an integer")
-        elif value < 1:
-            raise Exception("pages should have a least one page")
-        return value
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, unique=False, nullable=False)
+    author = Column(String, unique=False, nullable=False)
+    pub_date = Column(DateTime)
+    isbn = Column(String, unique=True, nullable=False)
+    pages = Column(Integer, unique=False, nullable=False)
+    hyperlink = Column(String, unique=False, nullable=False)
+    language = Column(String, unique=False, nullable=False)
