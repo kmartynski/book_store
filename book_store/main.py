@@ -8,6 +8,7 @@ from starlette.responses import RedirectResponse
 from database import SessionLocal, engine
 from models import Base, Book
 from schemas import BooksSchema
+from crud import create_book
 
 Base.metadata.create_all(bind=engine)
 
@@ -39,6 +40,6 @@ async def get_all_books(db: Session = Depends(get_db)):
     return records
 
 
-@app.post("/books")
-async def post_book():
-    pass
+@app.post("/books", response_model=BooksSchema)
+async def post_book(book_id: int, book: BooksSchema, db: Session = Depends(get_db)):
+    return create_book(db=db, book=book, book_id=book_id)
