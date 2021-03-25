@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, validator
 
 
-class Book(BaseModel):
+class BooksSchema(BaseModel):
     title: str
     author: str
     pub_date: datetime
